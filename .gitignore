@@ -1,0 +1,35 @@
+# Fichiers sensibles
+.env
+
+# Maven
+target/
+*.log
+
+# IntelliJ IDEA
+.idea/
+*.iml
+
+# Eclipse / STS
+.apt_generated/
+.classpath
+.factorypath
+.project
+.settings/
+.springBeans
+.sts4-cache/
+
+# VS Code
+.vscode/
+
+# NetBeans
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+# Autres fichiers temporaires
+*.swp
+*.tmp
+.DS_Store
+Thumbs.db
