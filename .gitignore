@@ -1,9 +1,16 @@
 # Fichiers sensibles
 .env
 
-# Maven
-target/
+# Maven (backend)
+backend/target/
 *.log
+
+# Node/Vite (frontend)
+frontend/node_modules/
+frontend/dist/
+frontend/.env.local
+frontend/.env.*
+frontend/.npmrc
 
 # IntelliJ IDEA
 .idea/
