@@ -6,11 +6,11 @@ backend/target/
 *.log
 
 # Node/Vite (frontend)
-frontend/node_modules/
-frontend/dist/
-frontend/.env.local
-frontend/.env.*
-frontend/.npmrc
+everlake-api-ui/node_modules/
+everlake-api-ui/dist/
+everlake-api-ui/.env.local
+everlake-api-ui/.env.*
+everlake-api-ui/.npmrc
 
 # IntelliJ IDEA
 .idea/
