@@ -1,7 +1,7 @@
 import { ArrowRight, Shield, Database, Globe, Users } from "lucide-react"
 import { Button } from "./components/ui/button"
-import { Card, CardDescription, CardHeader, CardTitle } from "./components/ui/card"
 import { Navigation } from "./components/navigation"
+import { FeatureCard } from "./components/feature-card"
 
 export default function App() {
     return (
@@ -64,35 +64,23 @@ export default function App() {
                     </div>
 
                     <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                        <Card className="bg-white/5 border-white/10 backdrop-blur-sm">
-                            <CardHeader>
-                                <Globe className="h-12 w-12 text-blue-400 mb-4" />
-                                <CardTitle className="text-white">Solutions globales</CardTitle>
-                                <CardDescription className="text-gray-300">
-                                    Des outils intégrés pour gérer tous les aspects de votre activité depuis une seule plateforme
-                                </CardDescription>
-                            </CardHeader>
-                        </Card>
+                        <FeatureCard
+                            icon={<Globe className="h-12 w-12 text-blue-400" />}
+                            title="Solutions globales"
+                            description="Des outils intégrés pour gérer tous les aspects de votre activité depuis une seule plateforme. Centralisez vos données, automatisez vos processus et optimisez votre productivité avec notre suite complète d'applications métier."
+                        />
 
-                        <Card className="bg-white/5 border-white/10 backdrop-blur-sm">
-                            <CardHeader>
-                                <Shield className="h-12 w-12 text-blue-400 mb-4" />
-                                <CardTitle className="text-white">Sécurité avancée</CardTitle>
-                                <CardDescription className="text-gray-300">
-                                    Protection de niveau entreprise avec chiffrement end-to-end et conformité aux standards internationaux
-                                </CardDescription>
-                            </CardHeader>
-                        </Card>
+                        <FeatureCard
+                            icon={<Shield className="h-12 w-12 text-blue-400" />}
+                            title="Sécurité avancée"
+                            description="Protection de niveau entreprise avec chiffrement end-to-end et conformité aux standards internationaux. Vos données sont protégées par des protocoles de sécurité militaires et des audits réguliers garantissent votre conformité."
+                        />
 
-                        <Card className="bg-white/5 border-white/10 backdrop-blur-sm">
-                            <CardHeader>
-                                <Users className="h-12 w-12 text-blue-400 mb-4" />
-                                <CardTitle className="text-white">Collaboration</CardTitle>
-                                <CardDescription className="text-gray-300">
-                                    Outils collaboratifs avancés pour optimiser le travail d'équipe et la productivité
-                                </CardDescription>
-                            </CardHeader>
-                        </Card>
+                        <FeatureCard
+                            icon={<Users className="h-12 w-12 text-blue-400" />}
+                            title="Collaboration"
+                            description="Outils collaboratifs avancés pour optimiser le travail d'équipe et la productivité. Partagez, commentez, et travaillez ensemble en temps réel avec des fonctionnalités de communication intégrées et des workflows personnalisables."
+                        />
                     </div>
                 </div>
             </section>
