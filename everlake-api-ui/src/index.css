@@ -41,6 +41,26 @@
     transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
 }
 
+/* Animation de défilement des partenaires */
+@keyframes scrollRight {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-50%);
+    }
+}
+
+.partners-scroll {
+    animation: scrollRight 40s linear infinite;
+    width: calc(200% + 3rem); /* Double largeur pour la boucle infinie */
+}
+
+/* Pause au hover */
+.partners-scroll:hover {
+    animation-play-state: paused;
+}
+
 /* Animations personnalisées pour le modal */
 @keyframes modalEnter {
     0% {

@@ -2,6 +2,7 @@ import { ArrowRight, Shield, Database, Globe, Users } from "lucide-react"
 import { Button } from "./components/ui/button"
 import { Navigation } from "./components/navigation"
 import { FeatureCard } from "./components/feature-card"
+import { PartnersSection } from "./components/partners-section"
 
 export default function App() {
     return (
@@ -99,6 +100,9 @@ export default function App() {
                     </div>
                 </div>
             </section>
+
+            {/* Partners Section */}
+            <PartnersSection />
 
             {/* CTA Section */}
             <section className="py-20 px-4 sm:px-6 lg:px-8 bg-slate-900/50">
