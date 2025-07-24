@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { X } from "lucide-react"
 import { Button } from "./ui/button"
 
@@ -14,17 +14,36 @@ interface FeatureModalProps {
 }
 
 export function FeatureModal({ isOpen, onClose, icon, title, description }: FeatureModalProps) {
+    const [isClosing, setIsClosing] = useState(false)
+    const [shouldRender, setShouldRender] = useState(false)
+
+    // Gestion de l'ouverture/fermeture
+    useEffect(() => {
+        if (isOpen) {
+            setShouldRender(true)
+            setIsClosing(false)
+        }
+    }, [isOpen])
+
+    const handleClose = () => {
+        setIsClosing(true)
+        setTimeout(() => {
+            setShouldRender(false)
+            setIsClosing(false)
+            onClose()
+        }, 250) // Durée de l'animation de sortie
+    }
+
     // Fermer avec Escape
     useEffect(() => {
         const handleEscape = (e: KeyboardEvent) => {
-            if (e.key === "Escape") {
-                onClose()
+            if (e.key === "Escape" && isOpen) {
+                handleClose()
             }
         }
 
         if (isOpen) {
             document.addEventListener("keydown", handleEscape)
-            // Empêcher le scroll du body
             document.body.style.overflow = "hidden"
         }
 
@@ -32,125 +51,88 @@ export function FeatureModal({ isOpen, onClose, icon, title, description }: Feat
             document.removeEventListener("keydown", handleEscape)
             document.body.style.overflow = "unset"
         }
-    }, [isOpen, onClose])
+    }, [isOpen])
 
-    if (!isOpen) return null
+    if (!shouldRender) return null
+
+    const getFeatureDetails = (title: string) => {
+        const features = {
+            "Solutions globales": [
+                { title: "Gestion centralisée", desc: "Tableau de bord unifié pour tous vos outils et données" },
+                { title: "Automatisation intelligente", desc: "Workflows personnalisés pour optimiser vos processus" },
+                { title: "Intégrations natives", desc: "Connectez vos outils existants sans effort" },
+            ],
+            "Sécurité avancée": [
+                { title: "Chiffrement end-to-end", desc: "Protection maximale de vos données sensibles" },
+                { title: "Conformité RGPD", desc: "Respect total des réglementations européennes" },
+                { title: "Authentification multi-facteurs", desc: "Sécurité renforcée pour tous vos accès" },
+            ],
+            Collaboration: [
+                { title: "Temps réel", desc: "Collaboration instantanée avec vos équipes" },
+                { title: "Commentaires contextuels", desc: "Feedback précis directement sur vos projets" },
+                { title: "Gestion des permissions", desc: "Contrôle granulaire des accès et droits" },
+            ],
+        }
+        return features[title as keyof typeof features] || []
+    }
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
             {/* Overlay */}
             <div
-                className="absolute inset-0 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200"
-                onClick={onClose}
+                className={`absolute inset-0 bg-black/70 backdrop-blur-sm ${isClosing ? "overlay-exit" : "overlay-enter"}`}
+                onClick={handleClose}
             />
 
             {/* Modal Content */}
-            <div className="relative bg-slate-900 border border-white/10 rounded-2xl shadow-2xl max-w-2xl w-full mx-4 animate-in zoom-in-95 duration-200">
+            <div
+                className={`relative bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl max-w-2xl w-full ${
+                    isClosing ? "modal-exit" : "modal-enter"
+                }`}
+            >
                 {/* Header */}
-                <div className="flex items-center justify-between p-6 border-b border-white/10">
+                <div className="flex items-center justify-between p-6 border-b border-slate-800">
                     <div className="flex items-center space-x-4">
-                        <div className="p-3 bg-blue-500/10 rounded-xl border border-blue-500/20">{icon}</div>
+                        <div className="p-3 bg-slate-800 rounded-xl border border-slate-700">{icon}</div>
                         <h2 className="text-2xl font-bold text-white">{title}</h2>
                     </div>
                     <Button
                         variant="ghost"
                         size="icon"
-                        onClick={onClose}
-                        className="text-gray-400 hover:text-white hover:bg-white/10 rounded-full"
+                        onClick={handleClose}
+                        className="text-slate-400 hover:text-white hover:bg-slate-800 rounded-full transition-all duration-200 hover:scale-110"
                     >
                         <X className="h-5 w-5" />
                     </Button>
                 </div>
 
                 {/* Content */}
-                <div className="p-6">
+                <div className={`p-6 ${isClosing ? "" : "content-slide-in"}`}>
                     <div className="prose prose-invert max-w-none">
-                        <p className="text-gray-300 text-lg leading-relaxed">{description}</p>
+                        <p className="text-slate-300 text-lg leading-relaxed mb-8">{description}</p>
 
-                        {/* Features list based on the title */}
-                        <div className="mt-8 space-y-4">
-                            {title === "Solutions globales" && (
-                                <div className="grid gap-4">
-                                    <div className="flex items-start space-x-3">
-                                        <div className="w-2 h-2 bg-blue-400 rounded-full mt-2 flex-shrink-0" />
-                                        <div>
-                                            <h4 className="text-white font-semibold">Gestion centralisée</h4>
-                                            <p className="text-gray-400 text-sm">Tableau de bord unifié pour tous vos outils et données</p>
-                                        </div>
-                                    </div>
-                                    <div className="flex items-start space-x-3">
-                                        <div className="w-2 h-2 bg-blue-400 rounded-full mt-2 flex-shrink-0" />
-                                        <div>
-                                            <h4 className="text-white font-semibold">Automatisation intelligente</h4>
-                                            <p className="text-gray-400 text-sm">Workflows personnalisés pour optimiser vos processus</p>
-                                        </div>
-                                    </div>
-                                    <div className="flex items-start space-x-3">
-                                        <div className="w-2 h-2 bg-blue-400 rounded-full mt-2 flex-shrink-0" />
-                                        <div>
-                                            <h4 className="text-white font-semibold">Intégrations natives</h4>
-                                            <p className="text-gray-400 text-sm">Connectez vos outils existants sans effort</p>
-                                        </div>
+                        {/* Features list */}
+                        <div className="space-y-4">
+                            {getFeatureDetails(title).map((item, index) => (
+                                <div
+                                    key={index}
+                                    className="flex items-start space-x-3"
+                                    style={{
+                                        animationDelay: isClosing ? "0s" : `${0.2 + index * 0.1}s`,
+                                    }}
+                                >
+                                    <div className="w-2 h-2 bg-white rounded-full mt-2 flex-shrink-0" />
+                                    <div>
+                                        <h4 className="text-white font-semibold">{item.title}</h4>
+                                        <p className="text-slate-400 text-sm">{item.desc}</p>
                                     </div>
                                 </div>
-                            )}
-
-                            {title === "Sécurité avancée" && (
-                                <div className="grid gap-4">
-                                    <div className="flex items-start space-x-3">
-                                        <div className="w-2 h-2 bg-blue-400 rounded-full mt-2 flex-shrink-0" />
-                                        <div>
-                                            <h4 className="text-white font-semibold">Chiffrement end-to-end</h4>
-                                            <p className="text-gray-400 text-sm">Protection maximale de vos données sensibles</p>
-                                        </div>
-                                    </div>
-                                    <div className="flex items-start space-x-3">
-                                        <div className="w-2 h-2 bg-blue-400 rounded-full mt-2 flex-shrink-0" />
-                                        <div>
-                                            <h4 className="text-white font-semibold">Conformité RGPD</h4>
-                                            <p className="text-gray-400 text-sm">Respect total des réglementations européennes</p>
-                                        </div>
-                                    </div>
-                                    <div className="flex items-start space-x-3">
-                                        <div className="w-2 h-2 bg-blue-400 rounded-full mt-2 flex-shrink-0" />
-                                        <div>
-                                            <h4 className="text-white font-semibold">Authentification multi-facteurs</h4>
-                                            <p className="text-gray-400 text-sm">Sécurité renforcée pour tous vos accès</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
-
-                            {title === "Collaboration" && (
-                                <div className="grid gap-4">
-                                    <div className="flex items-start space-x-3">
-                                        <div className="w-2 h-2 bg-blue-400 rounded-full mt-2 flex-shrink-0" />
-                                        <div>
-                                            <h4 className="text-white font-semibold">Temps réel</h4>
-                                            <p className="text-gray-400 text-sm">Collaboration instantanée avec vos équipes</p>
-                                        </div>
-                                    </div>
-                                    <div className="flex items-start space-x-3">
-                                        <div className="w-2 h-2 bg-blue-400 rounded-full mt-2 flex-shrink-0" />
-                                        <div>
-                                            <h4 className="text-white font-semibold">Commentaires contextuels</h4>
-                                            <p className="text-gray-400 text-sm">Feedback précis directement sur vos projets</p>
-                                        </div>
-                                    </div>
-                                    <div className="flex items-start space-x-3">
-                                        <div className="w-2 h-2 bg-blue-400 rounded-full mt-2 flex-shrink-0" />
-                                        <div>
-                                            <h4 className="text-white font-semibold">Gestion des permissions</h4>
-                                            <p className="text-gray-400 text-sm">Contrôle granulaire des accès et droits</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
+                            ))}
                         </div>
 
                         {/* CTA Button */}
-                        <div className="mt-8 pt-6 border-t border-white/10">
-                            <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white">
+                        <div className="mt-8 pt-6 border-t border-slate-800">
+                            <Button className="bg-white text-slate-950 hover:bg-slate-100 font-semibold hover:scale-105 transition-transform duration-200">
                                 En savoir plus
                             </Button>
                         </div>
