@@ -27,7 +27,7 @@
         </dependencies>
     </dependencyManagement>
     <properties>
-        <java.version>21</java.version> <!-- ou 17 -->
+        <java.version>22</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
