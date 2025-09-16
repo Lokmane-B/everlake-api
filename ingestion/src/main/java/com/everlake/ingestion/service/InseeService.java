@@ -1,5 +1,7 @@
+// com.everlake.ingestion.service.InseeService
 package com.everlake.ingestion.service;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -7,25 +9,21 @@ import reactor.core.publisher.Mono;
 @Service
 public class InseeService {
 
-    private final WebClient inseeWebClient;
+    private final WebClient insee;
 
-    public InseeService(WebClient inseeWebClient) {
-        this.inseeWebClient = inseeWebClient;
+    public InseeService(@Qualifier("inseeWebClient") WebClient insee) {
+        this.insee = insee;
     }
 
-    /** Récupère l'unité légale par SIREN et renvoie le JSON brut. */
     public Mono<String> getEntrepriseBySiren(String siren) {
-        return inseeWebClient.get()
+        return insee.get()
                 .uri("/siren/{siren}", siren)
                 .retrieve()
+                // remonte le vrai statut/erreur de l'INSEE au lieu d'un 500 opaque
+                .onStatus(s -> s.isError(),
+                        resp -> resp.bodyToMono(String.class)
+                                .map(body -> new RuntimeException("INSEE " + resp.statusCode() + " - " + body)))
                 .bodyToMono(String.class);
     }
 
-    /** Récupère un établissement par SIRET (JSON brut). */
-    public Mono<String> getEtablissementBySiret(String siret) {
-        return inseeWebClient.get()
-                .uri("/siret/{siret}", siret)
-                .retrieve()
-                .bodyToMono(String.class);
-    }
 }
