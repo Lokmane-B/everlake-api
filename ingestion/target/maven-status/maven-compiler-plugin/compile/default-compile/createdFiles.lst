@@ -1,4 +1,6 @@
+com\everlake\ingestion\model\Entreprise.class
 com\everlake\ingestion\config\InseeClientConfig.class
-com\everlake\ingestion\IngestionApplication.class
 com\everlake\ingestion\service\InseeService.class
+com\everlake\ingestion\IngestionApplication.class
+com\everlake\ingestion\config\InseeBatchJobConfig.class
 com\everlake\ingestion\web\InseeController.class
