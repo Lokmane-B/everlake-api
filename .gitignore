@@ -1,6 +1,9 @@
 # Fichiers sensibles
 .env
 
+# Données locales Sirene
+ingestion/data/sirene/
+
 # Maven (backend)
 backend/target/
 *.log
