@@ -104,4 +104,8 @@ public class UniteLegaleEntity {
     // Brut
     @Column(name = "raw", columnDefinition = "jsonb")
     private String raw;
+
+/*    @Column(name = "nombre_periodes_unite_legale")
+    private String nombrePeriodesUniteLegale;*/
+
 }

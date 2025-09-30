@@ -35,7 +35,7 @@ public final class SireneMappers {
                 .prenom4(trim(c.getPrenom4UniteLegale()))
                 .categorieJuridique(trim(c.getCategorieJuridiqueUniteLegale()))
                 .activitePrincipale(cleanApe(c.getActivitePrincipaleUniteLegale()))
-                .nomenclatureActivite(trim(c.getNomenclatureActiviteUniteLegale()))
+                .nomenclatureActivite(trim(c.getNomenclatureActivitePrincipaleUniteLegale()))
                 .trancheEffectifs(trim(c.getTrancheEffectifsUniteLegale()))
                 .anneeEffectifs(parseInt(c.getAnneeEffectifsUniteLegale()))
                 .categorieEntreprise(trim(c.getCategorieEntreprise()))

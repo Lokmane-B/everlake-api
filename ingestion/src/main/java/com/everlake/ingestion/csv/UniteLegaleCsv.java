@@ -26,7 +26,7 @@ public class UniteLegaleCsv {
     // Codes UL
     private String categorieJuridiqueUniteLegale;        // "categorieJuridiqueUniteLegale"
     private String activitePrincipaleUniteLegale;        // "activitePrincipaleUniteLegale"
-    private String nomenclatureActiviteUniteLegale;      // "nomenclatureActiviteUniteLegale"
+    private String nomenclatureActivitePrincipaleUniteLegale;      // "nomenclatureActivitePrincipaleUniteLegale"
     private String trancheEffectifsUniteLegale;          // "trancheEffectifsUniteLegale"
     private String anneeEffectifsUniteLegale;            // "anneeEffectifsUniteLegale"
     private String categorieEntreprise;                  // "categorieEntreprise"
@@ -42,4 +42,7 @@ public class UniteLegaleCsv {
     private String dateDernierTraitementUniteLegale;     // "dateDernierTraitementUniteLegale" (timestamp)
     private String dateDebut;                             // selon flux, parfois présent
     private String raw;                                   // optionnel si tu veux mettre la ligne entière
+
+    //Restants
+    //private String nombrePeriodesUniteLegale;
 }

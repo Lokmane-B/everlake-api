@@ -18,6 +18,7 @@ import org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourc
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.builder.FlatFileItemReaderBuilder;
+import org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -38,55 +39,70 @@ public class InseeBatchJobConfig {
     /* =======================
        READER : CSV UniteLegale
        ======================= */
-    @Bean
-    public FlatFileItemReader<UniteLegaleCsv> uniteLegaleReader(
-            @Value("${sirene.data-dir}") String dataDir
-    ) {
-        // chemin du fichier (déjà présent dans ton repo)
-        String path = dataDir + "/StockUniteLegale_utf8.csv";
 
         // IMPORTANT : les "names" doivent matcher exactement les entêtes du CSV
-        // Si ton fichier a d’autres colonnes : laisse-les, Spring ignorera celles non listées ici.
-        return new FlatFileItemReaderBuilder<UniteLegaleCsv>()
-                .name("uniteLegaleReader")
-                .resource(new FileSystemResource(path))
-                .linesToSkip(1)             // header
-                .encoding("UTF-8")
-                .delimited()
-                .delimiter(";")
-                .names(
-                        "siren",
-                        "statutDiffusionUniteLegale",
-                        "etatAdministratifUniteLegale",
-                        "dateCreationUniteLegale",
-                        "denominationUniteLegale",
-                        "denominationUsuelle1UniteLegale",
-                        "denominationUsuelle2UniteLegale",
-                        "denominationUsuelle3UniteLegale",
-                        "nomUniteLegale",
-                        "nomUsageUniteLegale",
-                        "sigleUniteLegale",
-                        "prenom1UniteLegale",
-                        "prenom2UniteLegale",
-                        "prenom3UniteLegale",
-                        "prenom4UniteLegale",
-                        "categorieJuridiqueUniteLegale",
-                        "activitePrincipaleUniteLegale",
-                        "nomenclatureActiviteUniteLegale",
-                        "trancheEffectifsUniteLegale",
-                        "anneeEffectifsUniteLegale",
-                        "categorieEntreprise",
-                        "anneeCategorieEntreprise",
-                        "nicSiegeUniteLegale",
-                        "economieSocialeSolidaireUniteLegale",
-                        "societeMissionUniteLegale",
-                        "caractereEmployeurUniteLegale",
-                        "dateDernierTraitementUniteLegale",
-                        "dateDebut"
-                )
-                .targetType(UniteLegaleCsv.class)
-                .build();
-    }
+        // Si le fichier a d’autres colonnes : Spring ignorera celles non listées ici.
+        @Bean
+        public FlatFileItemReader<UniteLegaleCsv> uniteLegaleReader(
+                @Value("${sirene.data-dir}") String dataDir) {
+
+            String path = dataDir + "/StockUniteLegale_utf8.csv";
+
+            // Mapper strict: correspondance EXACTE des noms -> pas de fuzzy matching
+            BeanWrapperFieldSetMapper<UniteLegaleCsv> mapper = new BeanWrapperFieldSetMapper<>();
+            mapper.setTargetType(UniteLegaleCsv.class);
+            mapper.setDistanceLimit(0); // <= important: pas de correspondances "proches"
+            mapper.setStrict(false); // ignore les colonnes sans propriété correspondante
+
+            return new FlatFileItemReaderBuilder<UniteLegaleCsv>()
+                    .name("uniteLegaleReader")
+                    .resource(new FileSystemResource(path))
+                    .linesToSkip(1)
+                    .encoding("UTF-8")
+                    .delimited()
+                    .delimiter(",")
+                    .quoteCharacter('"')
+                    .names(
+                            "siren",
+                            "statutDiffusionUniteLegale",
+                            "unitePurgeeUniteLegale",
+                            "dateCreationUniteLegale",
+                            "sigleUniteLegale",
+                            "sexeUniteLegale",
+                            "prenom1UniteLegale",
+                            "prenom2UniteLegale",
+                            "prenom3UniteLegale",
+                            "prenom4UniteLegale",
+                            "prenomUsuelUniteLegale",
+                            "pseudonymeUniteLegale",
+                            "identifiantAssociationUniteLegale",
+                            "trancheEffectifsUniteLegale",
+                            "anneeEffectifsUniteLegale",
+                            "dateDernierTraitementUniteLegale",
+                            "nombrePeriodesUniteLegale",
+                            "categorieEntreprise",
+                            "anneeCategorieEntreprise",
+                            "dateDebut",
+                            "etatAdministratifUniteLegale",
+                            "nomUniteLegale",
+                            "nomUsageUniteLegale",
+                            "denominationUniteLegale",
+                            "denominationUsuelle1UniteLegale",
+                            "denominationUsuelle2UniteLegale",
+                            "denominationUsuelle3UniteLegale",
+                            "categorieJuridiqueUniteLegale",
+                            "activitePrincipaleUniteLegale",
+                            "nomenclatureActivitePrincipaleUniteLegale",
+                            "nicSiegeUniteLegale",
+                            "economieSocialeSolidaireUniteLegale",
+                            "societeMissionUniteLegale",
+                            "caractereEmployeurUniteLegale"
+                    )
+                    .fieldSetMapper(mapper) // <= la variable existe maintenant :)
+                    .strict(false)          // tolère colonnes en plus
+                    .build();
+        }
+
 
     /* ===============================
        PROCESSOR : CSV -> Entity (UL)

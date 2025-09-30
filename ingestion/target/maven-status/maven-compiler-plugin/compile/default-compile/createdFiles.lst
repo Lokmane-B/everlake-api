@@ -1,7 +1,15 @@
 com\everlake\ingestion\model\Entreprise.class
+com\everlake\ingestion\model\EtablissementEntity.class
 com\everlake\ingestion\config\InseeClientConfig.class
-com\everlake\ingestion\service\InseeService.class
-com\everlake\ingestion\IngestionApplication.class
+com\everlake\ingestion\model\EtablissementEntity$EtablissementEntityBuilder.class
 com\everlake\ingestion\config\InseeBatchJobConfig.class
 com\everlake\ingestion\csv\UniteLegaleCsv.class
+com\everlake\ingestion\model\UniteLegaleEntity$UniteLegaleEntityBuilder.class
 com\everlake\ingestion\web\InseeController.class
+com\everlake\ingestion\csv\EtablissementCsv.class
+com\everlake\ingestion\config\InseeBatchJobConfig$StopRunningJobsRunner.class
+com\everlake\ingestion\config\InseeBatchJobConfig$LaunchSireneJobRunner.class
+com\everlake\ingestion\service\InseeService.class
+com\everlake\ingestion\model\mapper\SireneMappers.class
+com\everlake\ingestion\IngestionApplication.class
+com\everlake\ingestion\model\UniteLegaleEntity.class

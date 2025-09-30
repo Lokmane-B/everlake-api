@@ -1,7 +1,11 @@
+C:\Users\Lokma\Documents\Everlake\Appli\everlake-api\ingestion\src\main\java\com\everlake\ingestion\model\UniteLegaleEntity.java
 C:\Users\Lokma\Documents\Everlake\Appli\everlake-api\ingestion\src\main\java\com\everlake\ingestion\IngestionApplication.java
 C:\Users\Lokma\Documents\Everlake\Appli\everlake-api\ingestion\src\main\java\com\everlake\ingestion\config\InseeClientConfig.java
 C:\Users\Lokma\Documents\Everlake\Appli\everlake-api\ingestion\src\main\java\com\everlake\ingestion\service\InseeService.java
+C:\Users\Lokma\Documents\Everlake\Appli\everlake-api\ingestion\src\main\java\com\everlake\ingestion\model\EtablissementEntity.java
+C:\Users\Lokma\Documents\Everlake\Appli\everlake-api\ingestion\src\main\java\com\everlake\ingestion\model\mapper\SireneMappers.java
 C:\Users\Lokma\Documents\Everlake\Appli\everlake-api\ingestion\src\main\java\com\everlake\ingestion\model\Entreprise.java
 C:\Users\Lokma\Documents\Everlake\Appli\everlake-api\ingestion\src\main\java\com\everlake\ingestion\csv\UniteLegaleCsv.java
 C:\Users\Lokma\Documents\Everlake\Appli\everlake-api\ingestion\src\main\java\com\everlake\ingestion\web\InseeController.java
 C:\Users\Lokma\Documents\Everlake\Appli\everlake-api\ingestion\src\main\java\com\everlake\ingestion\config\InseeBatchJobConfig.java
+C:\Users\Lokma\Documents\Everlake\Appli\everlake-api\ingestion\src\main\java\com\everlake\ingestion\csv\EtablissementCsv.java
