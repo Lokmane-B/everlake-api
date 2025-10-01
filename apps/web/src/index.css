@@ -1,0 +1,132 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+All colors MUST be HSL.
+*/
+
+@layer base {
+  :root {
+    /* Dark Theme - Exactly like the examples */
+    --background: 0 0% 4%;
+    --foreground: 0 0% 85%;
+
+    --card: 0 0% 7%;
+    --card-foreground: 0 0% 85%;
+
+    --popover: 0 0% 7%;
+    --popover-foreground: 0 0% 85%;
+
+    --primary: 0 0% 12%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 0 0% 12%;
+    --secondary-foreground: 0 0% 65%;
+
+    --muted: 0 0% 12%;
+    --muted-foreground: 0 0% 50%;
+
+    --accent: 0 0% 15%;
+    --accent-foreground: 0 0% 85%;
+
+    --destructive: 0 62% 50%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 0 0% 18%;
+    --input: 0 0% 12%;
+    --ring: 0 0% 18%;
+
+    --radius: 0.75rem;
+
+    /* New Layout Colors */
+    --main-background: 0 0% 8%;
+    --app-header-height: 60px;
+    
+    /* Sidebar */
+    --sidebar-background: 0 0% 4%;
+    --sidebar-foreground: 0 0% 65%;
+    --sidebar-primary: 212 22% 19%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 0 0% 12%;
+    --sidebar-accent-foreground: 0 0% 85%;
+    --sidebar-border: 0 0% 15%;
+    --sidebar-ring: 212 22% 19%;
+
+    /* Custom Colors - Like the examples */
+    --everlake-purple: 142 76% 36%;
+    --everlake-purple-dark: 142 76% 30%;
+    --everlake-action: 0 0% 85%;
+    --everlake-gray-50: 0 0% 95%;
+    --everlake-gray-100: 0 0% 85%;
+    --everlake-gray-200: 0 0% 75%;
+    --everlake-gray-300: 0 0% 65%;
+    --everlake-gray-400: 0 0% 55%;
+    --everlake-gray-500: 0 0% 45%;
+    --everlake-gray-600: 0 0% 35%;
+    --everlake-gray-700: 0 0% 25%;
+    --everlake-gray-800: 0 0% 15%;
+    --everlake-gray-900: 0 0% 8%;
+    --everlake-gray-950: 0 0% 4%;
+
+    /* Status Colors */
+    --success: 142 76% 36%;
+    --warning: 48 96% 53%;
+    --info: 199 89% 48%;
+    --error: 0 62% 50%;
+
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(var(--everlake-purple)), hsl(var(--everlake-purple-dark)));
+    --gradient-sidebar: linear-gradient(180deg, hsl(var(--sidebar-background)), hsl(220 16% 4%));
+
+    /* Shadows */
+    --shadow-elegant: 0 4px 20px -4px hsl(220 14% 4% / 0.8);
+    --shadow-glow: 0 0 20px hsl(var(--everlake-purple) / 0.3);
+    --shadow-card: 0 2px 8px -2px hsl(0 0% 0% / 0.1), 0 4px 16px -4px hsl(0 0% 0% / 0.1);
+
+    /* Animations */
+    --transition-smooth: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 1.4;
+    letter-spacing: -0.01em;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-weight: 400;
+    letter-spacing: -0.01em;
+  }
+
+  .text-compact {
+    font-size: 11px;
+    line-height: 1.3;
+  }
+
+  .spacing-comfortable {
+    @apply space-y-6;
+  }
+
+  .spacing-relaxed {
+    @apply space-y-8;
+  }
+
+  /* Remove focus outlines */
+  input:focus,
+  select:focus,
+  textarea:focus,
+  button:focus {
+    outline: none !important;
+    box-shadow: none !important;
+  }
+}

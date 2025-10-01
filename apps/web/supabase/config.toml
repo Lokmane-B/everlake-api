@@ -1,0 +1,10 @@
+project_id = "zrvlhpkfhxhmvmuxjgdm"
+
+[functions.generate-ao-pdf]
+verify_jwt = false
+
+[functions.create-notification]
+verify_jwt = false
+
+[functions.seed-devis]
+verify_jwt = false
