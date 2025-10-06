@@ -19,7 +19,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { useAuth } from "@/hooks/useAuth";
-import { supabase } from "@/integrations/supabase/client";
 import logoMediSante from "@/assets/logos/medisante-logo.png";
 
 const sidebarItems = [
@@ -30,15 +29,15 @@ const sidebarItems = [
 
 export function EverlakeSidebar() {
   const { state } = useSidebar();
-  const { user, loading } = useAuth();
+  const { user, loading, logout} = useAuth();
   const navigate = useNavigate();
   const collapsed = state === "collapsed";
   const location = useLocation();
   const currentPath = location.pathname;
   
-  const handleSignOut = async () => {
-    await supabase.auth.signOut();
-    navigate("/auth");
+  const handleSignOut = () => {
+    logout();          // supprime le token
+    navigate("/auth"); // redirige vers la page de login
   };
   
   const profileData = {
