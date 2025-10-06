@@ -1,16 +1,16 @@
+# apps/backend/src/main/resources/application.yml
 spring:
   datasource:
-    url: ${DB_URL}
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/everlake}
+    username: ${DB_USERNAME:everlake}
+    password: ${DB_PASSWORD:secret}
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
       ddl-auto: update
     show-sql: true
     properties:
-      hibernate:
-        format_sql: true
+      hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
   servlet:
     multipart:
       max-file-size: 10MB
