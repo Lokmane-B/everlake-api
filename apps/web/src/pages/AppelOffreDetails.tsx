@@ -151,9 +151,9 @@ export default function AppelOffreDetails() {
       <AppShellWithVar>
         <div className="min-h-screen flex items-center justify-center">
           <div className="text-center">
-            <h2 className="text-lg font-semibold mb-2">Appel d'offres non trouvé</h2>
+            <h2 className="text-lg font-semibold mb-2">Demande de devis non trouvée</h2>
             <Button onClick={() => navigate('/appels-offres')}>
-              Retour aux appels d'offres
+              Retour aux demandes de devis
             </Button>
           </div>
         </div>
@@ -180,8 +180,8 @@ export default function AppelOffreDetails() {
       if (error) throw error;
 
       toast({ 
-        title: "Appel d'offres clôturé", 
-        description: "L'appel d'offres a été clôturé avec succès." 
+        title: "Demande de devis clôturée", 
+        description: "La demande de devis a été clôturée avec succès."
       });
 
       // Refresh the data
@@ -190,7 +190,7 @@ export default function AppelOffreDetails() {
       console.error('Error closing appel offre:', error);
       toast({ 
         title: "Erreur", 
-        description: "Impossible de clôturer l'appel d'offres.", 
+        description: "Impossible de clôturer la demande de devis.", 
         variant: "destructive" 
       });
     }
@@ -200,7 +200,7 @@ export default function AppelOffreDetails() {
     if (!appel) return;
     
     const confirmed = window.confirm(
-      `Êtes-vous sûr de vouloir supprimer l'appel d'offres "${appel.title}" ? Cette action est irréversible.`
+      `Êtes-vous sûr de vouloir supprimer la demande de devis "${appel.title}" ? Cette action est irréversible.`
     );
     
     if (!confirmed) return;
@@ -215,8 +215,8 @@ export default function AppelOffreDetails() {
       if (error) throw error;
 
       toast({ 
-        title: "Appel d'offres supprimé", 
-        description: "L'appel d'offres a été supprimé avec succès." 
+        title: "Demande de devis supprimée", 
+        description: "La demande de devis a été supprimée avec succès."
       });
 
       navigate('/appels-offres');
@@ -224,7 +224,7 @@ export default function AppelOffreDetails() {
       console.error('Error deleting appel offre:', error);
       toast({ 
         title: "Erreur", 
-        description: "Impossible de supprimer l'appel d'offres.", 
+        description: "Impossible de supprimer la demande de devis.", 
         variant: "destructive" 
       });
     }
@@ -279,8 +279,8 @@ export default function AppelOffreDetails() {
   return (
     <>
       <Helmet>
-        <title>{`${appel.title} – Appel d'offres`}</title>
-        <meta name="description" content={`Détails de l'appel d'offres: ${appel.title}`} />
+        <title>{`${appel.title} – Demande de devis`}</title>
+        <meta name="description" content={`Détails de la demande de devis: ${appel.title}`} />
         <link rel="canonical" href={`/appels-offres/${id}`} />
       </Helmet>
       <AppShellWithVar>
@@ -291,8 +291,8 @@ export default function AppelOffreDetails() {
             <div className="flex items-center gap-4">
               <SidebarTrigger className="text-muted-foreground hover:text-foreground" />
               <div>
-                <h1 className="text-sm font-normal text-foreground">Appels d'offres</h1>
-                <p className="text-xs text-muted-foreground mt-0.5">Gérez vos appels d'offres</p>
+                <h1 className="text-sm font-normal text-foreground">Demandes de devis</h1>
+                <p className="text-xs text-muted-foreground mt-0.5">Gérez vos demandes de devis</p>
               </div>
             </div>
           </header>
@@ -303,7 +303,7 @@ export default function AppelOffreDetails() {
               <BreadcrumbList>
                 <BreadcrumbItem>
                   <BreadcrumbLink asChild>
-                    <Link to="/appels-offres">Appels d'offres</Link>
+                    <Link to="/appels-offres">Demandes de devis</Link>
                   </BreadcrumbLink>
                 </BreadcrumbItem>
                 <BreadcrumbSeparator />
@@ -443,7 +443,7 @@ export default function AppelOffreDetails() {
                   ))}
                 </div>
               ) : (
-                <p className="text-xs text-muted-foreground">Aucun document disponible. Cliquez sur "Générer PDF" pour créer le document de l'appel d'offres.</p>
+                <p className="text-xs text-muted-foreground">Aucun document disponible. Cliquez sur "Générer PDF" pour créer le document de la demande de devis.</p>
               )}
             </section>
             <Separator />

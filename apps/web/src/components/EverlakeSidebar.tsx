@@ -1,7 +1,7 @@
 import { 
   Search, Plus, FileText, 
   User,
-  HelpCircle, LogOut, Home, LogIn
+  LogOut, Home, LogIn
 } from "lucide-react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import {
@@ -23,13 +23,9 @@ import { supabase } from "@/integrations/supabase/client";
 import logoMediSante from "@/assets/logos/medisante-logo.png";
 
 const sidebarItems = [
-  { title: "Ajouter un appel d'offres", url: "/ajouter-appel-offre", icon: Plus, action: true },
-  { title: "Appels d'offres", url: "/appels-offres", icon: FileText },
+  { title: "Ajouter une demande de devis", url: "/ajouter-appel-offre", icon: Plus, action: true },
+  { title: "Demandes de devis", url: "/appels-offres", icon: FileText },
   { title: "Profil", url: "/company-profile", icon: User },
-];
-
-const footerItems = [
-  { title: "Support", url: "/support", icon: HelpCircle },
 ];
 
 export function EverlakeSidebar() {
@@ -130,24 +126,6 @@ export function EverlakeSidebar() {
 
       <SidebarFooter className="p-1 border-t border-sidebar-border">
         <SidebarMenu>
-          {footerItems.map((item) => (
-            <SidebarMenuItem key={item.title}>
-              <SidebarMenuButton asChild>
-                <NavLink 
-                  to={item.url} 
-                  className={collapsed ? 
-                    `${getNavClassName(item.url)} justify-center` : 
-                    getNavClassName(item.url)
-                  }
-                  title={collapsed ? item.title : undefined}
-                >
-                  <item.icon className="w-2.5 h-2.5 text-muted-foreground" />
-                  {!collapsed && <span className="text-xs">{item.title}</span>}
-                </NavLink>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          ))}
-          
           {/* Auth Actions */}
           <SidebarMenuItem>
             <SidebarMenuButton asChild>

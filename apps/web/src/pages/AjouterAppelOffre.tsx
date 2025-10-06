@@ -72,7 +72,7 @@ const AjouterAppelOffre = () => {
 
   const createMarche = async (status: 'Actif' | 'Brouillon') => {
     if (!user) {
-      toast.error("Vous devez être connecté pour créer un appel d'offres");
+      toast.error("Vous devez être connecté pour créer une demande de devis");
       return null;
     }
 
@@ -143,7 +143,7 @@ const AjouterAppelOffre = () => {
               userId: user.id,
               type: 'success',
               title: 'Appel d\'offres publié',
-              message: `Votre appel d'offres "${formData.titre}" a été publié avec succès.`
+              message: `Votre demande de devis "${formData.titre}" a été publiée avec succès.`
             }
           });
 
@@ -160,7 +160,7 @@ const AjouterAppelOffre = () => {
       return marche;
     } catch (error) {
       console.error('Error creating marche:', error);
-      toast.error("Erreur lors de la création de l'appel d'offres");
+      toast.error("Erreur lors de la création de la demande de devis");
       return null;
     } finally {
       setLoading(false);
@@ -170,28 +170,15 @@ const AjouterAppelOffre = () => {
   const handlePublier = async () => {
     const marche = await createMarche('Actif');
     if (marche) {
-      toast.success("Appel d'offres publié avec succès !");
-      // Navigate to the supplier selection page (same as "ajouter des destinataires")
-      navigate('/selection-reseau', {
-        state: {
-          appelOffre: {
-            id: marche.id,
-            title: marche.title,
-            sector: marche.sector,
-            location: marche.location || "Toute la France",
-            budget: marche.budget,
-            description: marche.description,
-            cahierDesCharges: marche.cahier_des_charges
-          }
-        }
-      });
+      toast.success("Demande de devis publiée avec succès !");
+      navigate('/appels-offres');
     }
   };
 
   const handleSauvegarder = async () => {
     const marche = await createMarche('Brouillon');
     if (marche) {
-      toast.success("Appel d'offres sauvegardé en brouillon");
+      toast.success("Demande de devis sauvegardée en brouillon");
       navigate('/appels-offres');
     }
   };
@@ -206,8 +193,8 @@ const AjouterAppelOffre = () => {
             <div className="flex items-center gap-4">
               <SidebarTrigger className="text-muted-foreground hover:text-foreground" />
               <div>
-                <h1 className="text-sm font-normal text-foreground">Ajouter un appel d'offres</h1>
-                <p className="text-xs text-muted-foreground mt-0.5">Créez un nouvel appel d'offres pour vos besoins d'achat</p>
+                <h1 className="text-sm font-normal text-foreground">Ajouter une demande de devis</h1>
+                <p className="text-xs text-muted-foreground mt-0.5">Créez une nouvelle demande de devis pour vos besoins d'achat</p>
               </div>
             </div>
             
@@ -218,23 +205,23 @@ const AjouterAppelOffre = () => {
           
           <section className="mb-6">
             <Helmet>
-              <title>Ajouter un appel d'offres</title>
-              <meta name="description" content="Créez un nouvel appel d'offres: titre, secteur, budget et échéances." />
+              <title>Ajouter une demande de devis</title>
+              <meta name="description" content="Créez une nouvelle demande de devis: titre, secteur, budget et échéances." />
               <link rel="canonical" href="/ajouter-appel-offre" />
             </Helmet>
-            <h2 className="text-sm font-normal text-foreground">Nouvel appel d'offres</h2>
+            <h2 className="text-sm font-normal text-foreground">Nouvelle demande de devis</h2>
             <p className="text-xs text-muted-foreground">Remplissez le formulaire ci-dessous</p>
           </section>
 
           <div className="space-y-6">
             {/* Titre de l'appel d'offre */}
             <div className="space-y-1.5">
-              <label htmlFor="titre" className="text-xs text-muted-foreground">Titre de l'appel d'offres</label>
+              <label htmlFor="titre" className="text-xs text-muted-foreground">Titre de la demande de devis</label>
               <Input
                 id="titre"
                 value={formData.titre}
                 onChange={(e) => handleInputChange("titre", e.target.value)}
-                placeholder="Entrez le titre de votre appel d'offres"
+                placeholder="Entrez le titre de votre demande de devis"
                 className="bg-transparent border-0 border-b rounded-none focus-visible:ring-0 focus:outline-none focus:border-foreground text-sm placeholder:text-muted-foreground"
               />
             </div>
@@ -376,7 +363,7 @@ const AjouterAppelOffre = () => {
                 value={formData.description}
                 onChange={(e) => handleInputChange("description", e.target.value)}
                 className="min-h-[120px] bg-transparent border-0 border-b rounded-none focus-visible:ring-0 focus:outline-none focus:border-foreground text-sm placeholder:text-muted-foreground"
-                placeholder="Décrivez en détail votre appel d'offres..."
+                placeholder="Décrivez en détail votre demande de devis..."
               />
             </div>
 

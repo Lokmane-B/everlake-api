@@ -25,7 +25,7 @@ const emptyConversionData = [
 
 const barMetrics = [
   { value: "operations", label: "Opérations" },
-  { value: "tenders", label: "Appels d'offres émis" },
+  { value: "tenders", label: "Demandes de devis émises" },
   { value: "quotes", label: "Devis envoyés" },
 ];
 

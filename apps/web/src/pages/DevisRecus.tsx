@@ -51,7 +51,7 @@ export default function DevisRecus() {
   const [seedTried, setSeedTried] = useState(false);
 
   const aoId = id;
-  const aoTitle = (state?.ao as any)?.title || `Appel d'offres #${id}`;
+  const aoTitle = (state?.ao as any)?.title || `Demande de devis #${id}`;
   const canonicalUrl = typeof window !== 'undefined' ? `${window.location.origin}/appels-offres/${id}/devis` : `/appels-offres/${id}/devis`;
 
   // Liste des devis pour ce marché
@@ -131,7 +131,7 @@ export default function DevisRecus() {
     <>
       <Helmet>
         <title>{`${aoTitle} – Devis reçus`}</title>
-        <meta name="description" content={`Liste des devis reçus pour l'appel d'offres ${aoTitle}`} />
+        <meta name="description" content={`Liste des devis reçus pour la demande de devis ${aoTitle}`} />
         <link rel="canonical" href={canonicalUrl} />
       </Helmet>
       <AppShellWithVar>
@@ -142,8 +142,8 @@ export default function DevisRecus() {
             <div className="flex items-center gap-4">
               <SidebarTrigger className="text-muted-foreground hover:text-foreground" />
               <div>
-                <h1 className="text-sm font-normal text-foreground">Appels d'offres</h1>
-                <p className="text-xs text-muted-foreground mt-0.5">Gérez vos appels d'offres</p>
+                <h1 className="text-sm font-normal text-foreground">Demandes de devis</h1>
+                <p className="text-xs text-muted-foreground mt-0.5">Gérez vos demandes de devis</p>
               </div>
             </div>
           </header>
@@ -154,7 +154,7 @@ export default function DevisRecus() {
               <BreadcrumbList>
                 <BreadcrumbItem>
                   <BreadcrumbLink asChild>
-                    <Link to="/appels-offres">Appels d'offres</Link>
+                    <Link to="/appels-offres">Demandes de devis</Link>
                   </BreadcrumbLink>
                 </BreadcrumbItem>
                 <BreadcrumbSeparator />
@@ -173,7 +173,7 @@ export default function DevisRecus() {
               </div>
             ) : devisForAo.length === 0 ? (
               <div className="flex justify-center py-8">
-                <div className="text-sm text-muted-foreground">Aucun devis reçu pour cet appel d'offres</div>
+                <div className="text-sm text-muted-foreground">Aucun devis reçu pour cette demande de devis</div>
               </div>
             ) : (
               <Table>
