@@ -56,6 +56,7 @@ public class AuthController {
     public ResponseEntity<?> register(@RequestBody Map<String, String> body) {
         String email = body.get("email");
         String password = body.get("password");
+        String fullName = body.get("full_name");
 
         Optional<User> existingUser = userRepository.findByEmail(email);
         if (existingUser.isPresent()) {
@@ -65,6 +66,7 @@ public class AuthController {
         User newUser = new User();
         newUser.setEmail(email);
         newUser.setPassword(passwordEncoder.encode(password));
+        newUser.setFullName(fullName);
         userRepository.save(newUser);
 
         return ResponseEntity.ok("Utilisateur créé avec succès");

@@ -131,7 +131,7 @@ export function EverlakeSidebar() {
               {user ? (
                 <button 
                   onClick={handleSignOut}
-                  className={collapsed ? 
+                  className={collapsed ?
                     `${getNavClassName("/logout")} justify-center` : 
                     getNavClassName("/logout")
                   }
