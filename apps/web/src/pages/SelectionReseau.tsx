@@ -183,7 +183,7 @@ export default function SelectionReseau() {
               <BreadcrumbList>
                 <BreadcrumbItem>
                   <BreadcrumbLink asChild>
-                    <Link to="/appels-offres">Appels d'offres</Link>
+                    <Link to="/appels-offres">Demandes de devis</Link>
                   </BreadcrumbLink>
                 </BreadcrumbItem>
                 <BreadcrumbSeparator />
@@ -204,7 +204,7 @@ export default function SelectionReseau() {
             {/* Info */}
             <div className="bg-muted/30 p-4 rounded-lg">
               <p className="text-xs text-muted-foreground">
-                <span className="font-medium">Étape 1/2:</span> Sélectionnez les contacts de votre réseau auxquels envoyer cet appel d'offres. 
+                <span className="font-medium">Étape 1/2:</span> Sélectionnez les contacts de votre réseau auxquels envoyer cette demande de devis. 
                 Vous pourrez ensuite découvrir des suggestions de nouveaux fournisseurs.
               </p>
             </div>

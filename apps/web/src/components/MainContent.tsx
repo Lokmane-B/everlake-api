@@ -87,14 +87,14 @@ export function MainContent() {
                 <div className="flex items-center justify-between">
                   <div className="flex-1">
                     <p className="text-xs text-muted-foreground uppercase tracking-wide h-6 flex items-end">
-                      Appels d'offres actifs
+                      Demandes de devis actives
                     </p>
                     <p className="text-sm font-normal text-foreground h-8 flex items-center">
                       {loading ? "..." : dashboardData.activeAO}
                     </p>
                     <p className="text-xs h-6 flex items-start">
                       <span className="text-muted-foreground">
-                        {dashboardData.activeAO === 0 ? "Créez votre premier AO" : "Appels d'offres en cours"}
+                        {dashboardData.activeAO === 0 ? "Créez votre première demande" : "Demandes de devis en cours"}
                       </span>
                     </p>
                   </div>

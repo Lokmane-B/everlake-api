@@ -117,7 +117,7 @@ export function useDevisActions(): DevisAction {
 
       toast({
         title: "Devis sélectionné",
-        description: `Le devis de ${companyName} a été sélectionné et l'appel d'offres a été attribué.`
+        description: `Le devis de ${companyName} a été sélectionné et la demande de devis a été attribuée.`
       });
     } catch (error) {
       console.error('Error selecting devis:', error);

@@ -88,8 +88,8 @@ export default function DevisRecuDetail() {
             <div className="flex items-center gap-4">
               <SidebarTrigger className="text-muted-foreground hover:text-foreground" />
               <div>
-                <h1 className="text-sm font-normal text-foreground">Appels d'offres</h1>
-                <p className="text-xs text-muted-foreground mt-0.5">Gérez vos appels d'offres</p>
+                <h1 className="text-sm font-normal text-foreground">Demandes de devis</h1>
+                <p className="text-xs text-muted-foreground mt-0.5">Gérez vos demandes de devis</p>
               </div>
             </div>
           </header>
@@ -100,7 +100,7 @@ export default function DevisRecuDetail() {
               <BreadcrumbList>
                 <BreadcrumbItem>
                   <BreadcrumbLink asChild>
-                    <Link to="/appels-offres">Appels d'offres</Link>
+                    <Link to="/appels-offres">Demandes de devis</Link>
                   </BreadcrumbLink>
                 </BreadcrumbItem>
                 <BreadcrumbSeparator />

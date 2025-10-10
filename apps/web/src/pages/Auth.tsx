@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { Helmet } from "react-helmet-async";
 
@@ -28,56 +27,43 @@ export default function Auth() {
     return <Navigate to="/" replace />;
   }
 
-  const handleAuth = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setError("");
-    setMessage("");
+const handleAuth = async (e: React.FormEvent) => {
+  e.preventDefault();
+  setIsLoading(true);
+  setError("");
+  setMessage("");
 
-    try {
-      if (isSignUp) {
-        const redirectUrl = `${window.location.origin}/`;
-        const { data, error } = await supabase.auth.signUp({
-          email,
-          password,
-          options: {
-            emailRedirectTo: redirectUrl,
-            data: {
-              full_name: fullName,
-            }
-          }
-        });
+  try {
+    if (isSignUp) {
+      const response = await fetch("http://localhost:8080/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password, fullName }),
+      });
 
-        if (error) throw error;
+      if (!response.ok) throw new Error(await response.text());
 
-        if (data.user && !data.session) {
-          setMessage("Vérifiez votre email pour confirmer votre inscription!");
-        }
-      } else {
-        const { error } = await supabase.auth.signInWithPassword({
-          email,
-          password,
-        });
+      setMessage("Inscription réussie, vous pouvez vous connecter !");
+    } else {
+      const response = await fetch("http://localhost:8080/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
 
-        if (error) throw error;
-      }
-    } catch (error: any) {
-      console.error("Auth error:", error);
-      
-      // Handle specific error messages in French
-      if (error.message?.includes("Invalid login credentials")) {
-        setError("Email ou mot de passe incorrect");
-      } else if (error.message?.includes("User already registered")) {
-        setError("Un compte existe déjà avec cet email");
-      } else if (error.message?.includes("Password should be at least")) {
-        setError("Le mot de passe doit contenir au moins 6 caractères");
-      } else {
-        setError(error.message || "Une erreur est survenue");
-      }
-    } finally {
-      setIsLoading(false);
+      if (!response.ok) throw new Error(await response.text());
+
+      const data = await response.json();
+      localStorage.setItem("token", data.token);
+      window.location.href = "/";
     }
-  };
+  } catch (err: any) {
+    setError(err.message || "Une erreur est survenue");
+  } finally {
+    setIsLoading(false);
+  }
+};
+
 
   return (
     <>

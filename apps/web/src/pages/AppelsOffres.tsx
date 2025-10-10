@@ -35,6 +35,55 @@ const AppelsOffres = () => {
   const [selectedStatus, setSelectedStatus] = useState("all");
   const [view, setView] = useState<"widget" | "list">("widget");
 
+  const handleGenerateDevis = async () => {
+    if (!user) return;
+    
+    const devisRequests = [
+      { marcheId: '3601c597-284f-4f19-86aa-63435372d3a2', count: 7, title: 'transport de matière première' },
+      { marcheId: '2716447e-ca18-429d-b2a0-0e910b889a77', count: 2, title: 'Fourniture d\'équipements miniers' },
+      { marcheId: 'f1f71dea-4ae4-431b-91fb-e7e36900a752', count: 8, title: 'Approvisionnement en produits chimiques de traitement' },
+      { marcheId: '3d0fda28-bb9c-4d86-9f48-be56694e9666', count: 14, title: 'Services de conseil juridique spécialisé' }
+    ];
+
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      for (const request of devisRequests) {
+        const response = await fetch(
+          'https://zrvlhpkfhxhmvmuxjgdm.supabase.co/functions/v1/seed-devis',
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${session?.access_token}`
+            },
+            body: JSON.stringify({
+              marcheId: request.marcheId,
+              userId: user.id,
+              count: request.count
+            })
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error(`Erreur pour ${request.title}`);
+        }
+      }
+
+      toast({
+        title: "Devis générés",
+        description: "31 devis ont été créés avec succès."
+      });
+    } catch (error) {
+      console.error('Error generating devis:', error);
+      toast({
+        title: "Erreur",
+        description: "Impossible de générer les devis.",
+        variant: "destructive"
+      });
+    }
+  };
+
   const handleAddExamples = async () => {
     if (!user) return;
     
@@ -139,7 +188,7 @@ Installation et mise en service : 4 semaines.`,
 
       toast({
         title: "Exemples ajoutés",
-        description: "Deux appels d'offres exemples ont été créés avec succès."
+        description: "Deux demandes de devis exemples ont été créées avec succès."
       });
     } catch (error) {
       console.error('Error adding examples:', error);
@@ -163,8 +212,8 @@ Installation et mise en service : 4 semaines.`,
   return (
     <>
       <Helmet>
-        <title>Appels d'offres - Everlake Platform</title>
-        <meta name="description" content="Gérez vos appels d'offres, suivez leur progression et optimisez votre processus de réponse aux marchés publics." />
+        <title>Demandes de devis - Everlake Platform</title>
+        <meta name="description" content="Gérez vos demandes de devis, suivez leur progression et optimisez votre processus de réponse aux marchés publics." />
       </Helmet>
       
       <AppShellWithVar>
@@ -176,8 +225,8 @@ Installation et mise en service : 4 semaines.`,
               <div className="flex items-center gap-4">
                 <SidebarTrigger className="text-muted-foreground hover:text-foreground" />
                 <div>
-                  <h1 className="text-sm font-normal text-foreground">Appels d'offres</h1>
-                  <p className="text-xs text-muted-foreground mt-0.5">Gérez vos appels d'offres en cours</p>
+                  <h1 className="text-sm font-normal text-foreground">Demandes de devis</h1>
+                  <p className="text-xs text-muted-foreground mt-0.5">Gérez vos demandes de devis en cours</p>
                 </div>
               </div>
               
@@ -206,8 +255,12 @@ Installation et mise en service : 4 semaines.`,
                   <Button variant="ghost" size="sm" className="h-7 px-2 text-xs" asChild>
                     <Link to="/ajouter-appel-offre">
                       <Plus className="h-3 w-3 mr-1.5 text-muted-foreground" />
-                      <span className="text-foreground">Créer un appel d'offres</span>
+                      <span className="text-foreground">Créer une demande de devis</span>
                     </Link>
+                  </Button>
+                  <Button variant="outline" size="sm" className="h-7 px-2 text-xs" onClick={handleGenerateDevis}>
+                    <FileText className="h-3 w-3 mr-1.5" />
+                    <span>Générer devis tests</span>
                   </Button>
                 </div>
                 <ViewToggle view={view} onViewChange={setView} />
@@ -216,9 +269,9 @@ Installation et mise en service : 4 semaines.`,
               {appelsOffres.length === 0 ? (
                 <EmptyState
                   icon={FileText}
-                  title="Aucun appel d'offres créé"
-                  description="Créez votre premier appel d'offres pour lancer une consultation auprès de vos fournisseurs. Cette fonctionnalité vous permet de comparer les offres reçues et sélectionner la meilleure proposition."
-                  actionLabel="Créer un appel d'offres"
+                  title="Aucune demande de devis créée"
+                  description="Créez votre première demande de devis pour lancer une consultation auprès de vos fournisseurs. Cette fonctionnalité vous permet de comparer les offres reçues et sélectionner la meilleure proposition."
+                  actionLabel="Créer une demande de devis"
                   actionTo="/ajouter-appel-offre"
                   variant="minimal"
                 />

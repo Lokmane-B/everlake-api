@@ -68,3 +68,12 @@ nbproject/private/
 .DS_Store
 Thumbs.db
 desktop.ini
+
+# --- Front
+apps/web/node_modules/
+apps/web/dist/
+apps/web/.env.local
+apps/web/.env
+
+**/yarn.lock
+**/package-lock.json

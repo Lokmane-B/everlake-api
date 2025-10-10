@@ -9,6 +9,7 @@ import { HelmetProvider } from "react-helmet-async";
 import { AuthProvider } from "@/hooks/useAuth";
 import NotFound from "./pages/NotFound";
 import Auth from "./pages/Auth";
+import Logout from "./pages/Logout";
 import AjouterAppelOffre from "./pages/AjouterAppelOffre";
 
 import AppelsOffres from "./pages/AppelsOffres";
@@ -47,6 +48,7 @@ const App = () => {
               <BrowserRouter>
               <Routes>
                 <Route path="/auth" element={<Auth />} />
+                <Route path="/logout" element={<Logout />} />
                 <Route path="/" element={<Navigate to="/appels-offres" replace />} />
                 <Route path="/ajouter-appel-offre" element={<AjouterAppelOffre />} />
                 

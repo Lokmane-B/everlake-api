@@ -1,4 +1,5 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { useNavigate } from "react-router-dom";
 import { Calendar, FileText, CheckCircle, Clock, XCircle, Edit, Award } from "lucide-react";
 import { getStatusBadge } from "@/data/status";

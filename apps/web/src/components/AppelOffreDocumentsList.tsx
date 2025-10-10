@@ -14,7 +14,7 @@ export function AppelOffreDocumentsList() {
   if (loading) {
     return (
       <div className="space-y-4">
-        <h3 className="text-xs font-normal text-foreground tracking-tight">Mes appels d'offres</h3>
+        <h3 className="text-xs font-normal text-foreground tracking-tight">Mes demandes de devis</h3>
         <div className="space-y-2">
           {[1, 2, 3].map((i) => (
             <div key={i} className="h-16 bg-muted animate-pulse rounded-md" />
@@ -27,16 +27,16 @@ export function AppelOffreDocumentsList() {
   if (!appelsOffres || appelsOffres.length === 0) {
     return (
       <div className="space-y-4">
-        <h3 className="text-xs font-normal text-foreground tracking-tight">Mes appels d'offres</h3>
+        <h3 className="text-xs font-normal text-foreground tracking-tight">Mes demandes de devis</h3>
         <Card>
           <CardContent className="flex flex-col items-center justify-center py-8 text-center">
             <FileText className="h-8 w-8 text-muted-foreground mb-2" />
             <p className="text-sm text-muted-foreground mb-4">
-              Aucun appel d'offres créé
+              Aucune demande de devis créée
             </p>
             <Button size="sm" variant="outline" asChild>
               <Link to="/ajouter-appel-offre">
-                Créer un appel d'offres
+                Créer une demande de devis
               </Link>
             </Button>
           </CardContent>
@@ -48,7 +48,7 @@ export function AppelOffreDocumentsList() {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h3 className="text-xs font-normal text-foreground tracking-tight">Mes appels d'offres</h3>
+        <h3 className="text-xs font-normal text-foreground tracking-tight">Mes demandes de devis</h3>
         <Button size="sm" variant="outline" asChild className="h-7 px-2 text-xs">
           <Link to="/appels-offres">Voir tout</Link>
         </Button>
