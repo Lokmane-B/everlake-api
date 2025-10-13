@@ -19,5 +19,6 @@ spring:
       max-request-size: 10MB
 
 jwt:
-  secret: ${JWT_SECRET:super-secret-key-change-me-1234567890}
+  secret: "u8x9l2NfP9rE5GxTQ6u6y2dPkYzskjD4aQb7J7e0qYw="
+
 

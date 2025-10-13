@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from "react";
-import { Navigate } from "react-router-dom";
+import React, { useEffect, useMemo, useState } from "react";
+import { Navigate, Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { SidebarTrigger, useSidebar } from "@/components/ui/sidebar";
 import { EverlakeSidebar } from "@/components/EverlakeSidebar";
-import { Bell, FileText, Plus } from "lucide-react";
-import { Link } from "react-router-dom";
+import { FileText, Plus } from "lucide-react";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Button } from "@/components/ui/button";
 import { CompactFilterBar } from "@/components/CompactFilterBar";
@@ -12,8 +11,6 @@ import { ViewToggle } from "@/components/ViewToggle";
 import { AppelOffreListView } from "@/components/AppelOffreListView";
 import { AppelOffreWidgetCard } from "@/components/AppelOffreWidgetCard";
 import { useAuth } from "@/hooks/useAuth";
-import { useAppelsOffres } from "@/hooks/useAppelsOffres";
-import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
 const AppShellWithVar: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -22,299 +19,191 @@ const AppShellWithVar: React.FC<{ children: React.ReactNode }> = ({ children }) 
   return (
     <div className="min-h-screen flex w-full bg-main-background relative" style={{ ["--app-header-height" as any]: headerHeight }}>
       {children}
-      <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-[var(--app-header-height)] h-px bg-sidebar-border z-20" />
+      <div aria-hidden className="pointer-events-none absolute inset-x-0 top-[var(--app-header-height)] h-px bg-sidebar-border z-20" />
     </div>
   );
 };
 
-const AppelsOffres = () => {
+// Format renvoyé par GET /api/rfqs (ton contrôleur)
+type RfqListItem = {
+  id: number;
+  title: string;
+  sector: string;
+  budget: number | string | null;   // BigDecimal côté Java -> number/string ici
+  end_date: string | null;
+  status: string;
+  visibility: "publique" | "privee" | string;
+  devisCount: number;
+};
+
+const AppelsOffres: React.FC = () => {
   const { user, loading } = useAuth();
   const { toast } = useToast();
+
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("all");
   const [view, setView] = useState<"widget" | "list">("widget");
 
-  const [appelsOffres, setAppelsOffres] = useState<any[]>([]);
+  const [rfqs, setRfqs] = useState<RfqListItem[]>([]);
+  const [fetching, setFetching] = useState(false);
 
+  // Charge les RFQ UNIQUEMENT quand user + token sont prêts
   useEffect(() => {
+    if (loading) return;
+    const token = localStorage.getItem("token");
+    if (!user || !token) return;
+
     const fetchRfq = async () => {
       try {
-        const token = localStorage.getItem("token"); // récupère ton JWT
-        const response = await fetch("http://localhost:8080/api/rfqs", {
+        setFetching(true);
+        const res = await fetch("http://localhost:8080/api/rfqs", {
           headers: {
             "Authorization": `Bearer ${token}`,
-            "Content-Type": "application/json"
-          }
+            "Accept": "application/json",
+          },
         });
-        if (!response.ok) throw new Error("Erreur lors du chargement des appels d'offres");
-        const data = await response.json();
-        setAppelsOffres(data);
-      } catch (err) {
-        console.error(err);
+        if (res.status === 401 || res.status === 403) {
+          toast({
+            title: "Session requise",
+            description: "Veuillez vous reconnecter.",
+            variant: "destructive",
+          });
+          return;
+        }
+        if (!res.ok) throw new Error("Erreur lors du chargement des demandes de devis");
+        const data: RfqListItem[] = await res.json();
+        setRfqs(data ?? []);
+      } catch (e) {
+        console.error(e);
+        toast({
+          title: "Erreur",
+          description: "Impossible de charger les demandes de devis.",
+          variant: "destructive",
+        });
+      } finally {
+        setFetching(false);
       }
     };
+
     fetchRfq();
-  }, []);
+  }, [user, loading, toast]);
 
+  // Filtrage local basique (recherche + statut)
+  const appelsOffres = useMemo(() => {
+    const term = searchTerm.trim().toLowerCase();
+    return rfqs.filter(a => {
+      const matchTerm =
+        !term ||
+        a.title?.toLowerCase().includes(term) ||
+        a.sector?.toLowerCase().includes(term);
+      const matchStatus =
+        selectedStatus === "all" || a.status?.toLowerCase() === selectedStatus;
+      return matchTerm && matchStatus;
+    });
+  }, [rfqs, searchTerm, selectedStatus]);
 
-  const handleGenerateDevis = async () => {
-    if (!user) return;
-    
-    const devisRequests = [
-      { marcheId: '3601c597-284f-4f19-86aa-63435372d3a2', count: 7, title: 'transport de matière première' },
-      { marcheId: '2716447e-ca18-429d-b2a0-0e910b889a77', count: 2, title: 'Fourniture d\'équipements miniers' },
-      { marcheId: 'f1f71dea-4ae4-431b-91fb-e7e36900a752', count: 8, title: 'Approvisionnement en produits chimiques de traitement' },
-      { marcheId: '3d0fda28-bb9c-4d86-9f48-be56694e9666', count: 14, title: 'Services de conseil juridique spécialisé' }
-    ];
-
-    try {
-      const { data: { session } } = await supabase.auth.getSession();
-      
-      for (const request of devisRequests) {
-        const response = await fetch(
-          'https://zrvlhpkfhxhmvmuxjgdm.supabase.co/functions/v1/seed-devis',
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${session?.access_token}`
-            },
-            body: JSON.stringify({
-              marcheId: request.marcheId,
-              userId: user.id,
-              count: request.count
-            })
-          }
-        );
-
-        if (!response.ok) {
-          throw new Error(`Erreur pour ${request.title}`);
-        }
-      }
-
-      toast({
-        title: "Devis générés",
-        description: "31 devis ont été créés avec succès."
-      });
-    } catch (error) {
-      console.error('Error generating devis:', error);
-      toast({
-        title: "Erreur",
-        description: "Impossible de générer les devis.",
-        variant: "destructive"
-      });
-    }
-  };
-
-  const handleAddExamples = async () => {
-    if (!user) return;
-    
-    const exampleMarches = [
-      {
-        title: "Installation système photovoltaïque 500 kWc",
-        description: "Installation d'un système photovoltaïque de 500 kWc minimum sur toiture industrielle de 4000 m²",
-        sector: "Énergie & Environnement",
-        location: "Lyon, Rhône-Alpes",
-        budget: "250 000 - 350 000 €",
-        status: "Actif",
-        end_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-        created_by: user.id,
-        company_name: "EcoSolar Industries",
-        visibility: "publique",
-        cahier_des_charges: `1 Caractéristiques générales
-
-Surface disponible : environ 4 000 m² exploitables.
-Puissance installée attendue : ≥ 500 kWc.
-Type de panneaux : monocristallins haut rendement (> 20 %).
-Onduleurs centralisés ou string, rendement > 97 %.
-
-2 Normes et certifications
-
-Matériel conforme aux normes CE et IEC en vigueur.
-Installateur certifié QualiPV.
-Garantie constructeur :
-Panneaux : 10 ans produit, 25 ans performance (80 % mini).
-Onduleurs : 10 ans.
-
-3 Études et documentation
-
-Étude de faisabilité et dimensionnement précis (logiciel PVsyst ou équivalent).
-Plans d'implantation.
-Schéma électrique unifilaire.
-Note de calcul structurelle pour la toiture.
-
-4 Maintenance et suivi
-
-Maintenance préventive annuelle.
-Intervention corrective sous 72h en cas de panne critique.
-Mise à disposition d'un outil de suivi en ligne (monitoring production).
-
-5 Délais d'exécution
-
-Installation complète : 12 semaines à compter de la signature du marché.
-Délai de raccordement réseau : selon délais Enedis (4-8 semaines).`,
-        evaluation_criteria: ["Prix (40%)", "Qualité technique (30%)", "Délais (20%)", "Maintenance (10%)"]
-      },
-      {
-        title: "Fourniture équipements électriques industriels",
-        description: "Fourniture et installation d'équipements électriques pour modernisation d'atelier de production",
-        sector: "Industrie & Manufacturing",
-        location: "Marseille, PACA",
-        budget: "80 000 - 120 000 €",
-        status: "Actif",
-        end_date: new Date(Date.now() + 45 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-        created_by: user.id,
-        company_name: "TechnoIndustries",
-        visibility: "publique",
-        cahier_des_charges: `1 Caractéristiques générales
-
-Modernisation complète du tableau électrique principal.
-Installation de 15 postes de distribution 400V.
-Mise en conformité NF C 15-100.
-Puissance totale : 300 kW.
-
-2 Normes et certifications
-
-Matériel conforme NF et CE.
-Installation par électricien qualifié Qualifelec.
-Garantie matériel : 5 ans minimum.
-Garantie installation : 2 ans.
-
-3 Études et documentation
-
-Schéma unifilaire détaillé.
-Plans d'implantation.
-Dossier de conformité Consuel.
-Formation utilisateurs incluse.
-
-4 Maintenance et suivi
-
-Maintenance préventive semestrielle.
-Intervention sous 24h en cas d'urgence.
-Carnet de maintenance fourni.
-
-5 Délais d'exécution
-
-Études et fourniture : 8 semaines.
-Installation et mise en service : 4 semaines.`,
-        evaluation_criteria: ["Prix (35%)", "Références techniques (25%)", "Délais (25%)", "Garanties (15%)"]
-      }
-    ];
-
-    try {
-      const { error } = await supabase
-        .from('marches')
-        .insert(exampleMarches);
-
-      if (error) throw error;
-
-      toast({
-        title: "Exemples ajoutés",
-        description: "Deux demandes de devis exemples ont été créées avec succès."
-      });
-    } catch (error) {
-      console.error('Error adding examples:', error);
-      toast({
-        title: "Erreur",
-        description: "Impossible d'ajouter les exemples.",
-        variant: "destructive"
-      });
-    }
-  };
-
-
-  if (loading) {
-    return null;
-  }
-
-  if (!user) {
-    return <Navigate to="/homepage" replace />;
-  }
+  if (loading) return null;
+  if (!user) return <Navigate to="/homepage" replace />;
 
   return (
     <>
       <Helmet>
         <title>Demandes de devis - Everlake Platform</title>
-        <meta name="description" content="Gérez vos demandes de devis, suivez leur progression et optimisez votre processus de réponse aux marchés publics." />
+        <meta
+          name="description"
+          content="Gérez vos demandes de devis, suivez leur progression et optimisez votre processus de réponse."
+        />
       </Helmet>
-      
+
       <AppShellWithVar>
         <EverlakeSidebar />
-        
+
         <div className="flex-1 flex flex-col min-h-screen">
-            {/* Header */}
-            <header className="flex items-center justify-between h-[var(--app-header-height)] px-6 bg-main-background">
-              <div className="flex items-center gap-4">
-                <SidebarTrigger className="text-muted-foreground hover:text-foreground" />
-                <div>
-                  <h1 className="text-sm font-normal text-foreground">Demandes de devis</h1>
-                  <p className="text-xs text-muted-foreground mt-0.5">Gérez vos demandes de devis en cours</p>
-                </div>
+          {/* Header */}
+          <header className="flex items-center justify-between h-[var(--app-header-height)] px-6 bg-main-background">
+            <div className="flex items-center gap-4">
+              <SidebarTrigger className="text-muted-foreground hover:text-foreground" />
+              <div>
+                <h1 className="text-sm font-normal text-foreground">Demandes de devis</h1>
+                <p className="text-xs text-muted-foreground mt-0.5">Gérez vos demandes de devis en cours</p>
               </div>
-              
-            </header>
+            </div>
+          </header>
 
-            {/* Main Content */}
-            <main className="flex-1 p-6 pt-8">
-              <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center gap-3">
-                  <CompactFilterBar
-                    searchTerm={searchTerm}
-                    onSearchChange={setSearchTerm}
-                    filters={[
-                      {
-                        label: "Statut",
-                        value: selectedStatus,
-                        options: [
-                          { value: "en cours", label: "En cours" },
-                          { value: "cloture", label: "Clôturé" },
-                          { value: "brouillon", label: "Brouillon" }
-                        ],
-                        onChange: setSelectedStatus
-                      }
-                    ]}
-                  />
-                  <Button variant="ghost" size="sm" className="h-7 px-2 text-xs" asChild>
-                    <Link to="/ajouter-appel-offre">
-                      <Plus className="h-3 w-3 mr-1.5 text-muted-foreground" />
-                      <span className="text-foreground">Créer une demande de devis</span>
-                    </Link>
-                  </Button>
-                  <Button variant="outline" size="sm" className="h-7 px-2 text-xs" onClick={handleGenerateDevis}>
-                    <FileText className="h-3 w-3 mr-1.5" />
-                    <span>Générer devis tests</span>
-                  </Button>
-                </div>
-                <ViewToggle view={view} onViewChange={setView} />
-              </div>
-
-              {appelsOffres.length === 0 ? (
-                <EmptyState
-                  icon={FileText}
-                  title="Aucune demande de devis créée"
-                  description="Créez votre première demande de devis pour lancer une consultation auprès de vos fournisseurs. Cette fonctionnalité vous permet de comparer les offres reçues et sélectionner la meilleure proposition."
-                  actionLabel="Créer une demande de devis"
-                  actionTo="/ajouter-appel-offre"
-                  variant="minimal"
+          {/* Main */}
+          <main className="flex-1 p-6 pt-8">
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-3">
+                <CompactFilterBar
+                  searchTerm={searchTerm}
+                  onSearchChange={setSearchTerm}
+                  filters={[
+                    {
+                      label: "Statut",
+                      value: selectedStatus,
+                      options: [
+                        { value: "all", label: "Tous" },
+                        { value: "actif", label: "Actif" },
+                        { value: "brouillon", label: "Brouillon" },
+                        { value: "terminé", label: "Terminé" },
+                      ],
+                      onChange: setSelectedStatus,
+                    },
+                  ]}
                 />
-              ) : view === "widget" ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
-                  {appelsOffres.map((appel) => (
-                    <AppelOffreWidgetCard key={appel.id} appel={appel} />
-                  ))}
-                </div>
-              ) : (
-                <AppelOffreListView appels={appelsOffres.map(appel => ({
-                  id: appel.id,
-                  titre: appel.title,
-                  secteur: appel.sector,
-                  budget: appel.budget,
-                  dateLimite: appel.end_date,
-                  status: appel.status,
-                  visibilite: appel.visibility,
-                  devisCount: appel.devisCount
-                }))} />
-              )}
+                <Button variant="ghost" size="sm" className="h-7 px-2 text-xs" asChild>
+                  <Link to="/ajouter-appel-offre">
+                    <Plus className="h-3 w-3 mr-1.5 text-muted-foreground" />
+                    <span className="text-foreground">Créer une demande de devis</span>
+                  </Link>
+                </Button>
+              </div>
+              <ViewToggle view={view} onViewChange={setView} />
+            </div>
+
+            {fetching && rfqs.length === 0 ? (
+              <div className="text-xs text-muted-foreground">Chargement…</div>
+            ) : appelsOffres.length === 0 ? (
+              <EmptyState
+                icon={FileText}
+                title="Aucune demande de devis créée"
+                description="Créez votre première demande pour lancer une consultation."
+                actionLabel="Créer une demande de devis"
+                actionTo="/ajouter-appel-offre"
+                variant="minimal"
+              />
+            ) : view === "widget" ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+                {appelsOffres.map((a) => (
+                  <AppelOffreWidgetCard
+                    key={a.id}
+                    appel={{
+                      id: a.id,
+                      title: a.title,
+                      sector: a.sector,
+                      budget: a.budget,
+                      end_date: a.end_date,
+                      status: a.status,
+                      visibility: a.visibility,
+                      devisCount: a.devisCount,
+                    }}
+                  />
+                ))}
+              </div>
+            ) : (
+              <AppelOffreListView
+                appels={appelsOffres.map((a) => ({
+                  id: a.id,
+                  titre: a.title,
+                  secteur: a.sector,
+                  budget: a.budget,
+                  dateLimite: a.end_date,
+                  status: a.status,
+                  visibilite: a.visibility,
+                  devisCount: a.devisCount,
+                }))}
+              />
+            )}
           </main>
         </div>
       </AppShellWithVar>

@@ -12,16 +12,14 @@ public class CorsConfig {
     @Bean
     public WebMvcConfigurer corsConfigurer() {
         return new WebMvcConfigurer() {
-            @Override
-            public void addCorsMappings(CorsRegistry registry) {
+            @Override public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins("http://localhost:8081")
-                        //.allowedOrigins("http://localhost:4173")
-                        .allowedOriginPatterns(String.valueOf(List.of("*")))
-                        .allowedMethods("GET", "POST", "PUT", "DELETE")
+                        .allowedOriginPatterns("http://localhost:8081", "http://localhost:4173")
+                        .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
                         .allowCredentials(true);
             }
         };
     }
 }
+

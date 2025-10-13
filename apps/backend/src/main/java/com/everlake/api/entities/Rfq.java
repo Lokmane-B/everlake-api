@@ -80,7 +80,7 @@ public class Rfq {
     private String companyName;
 
     // Auteur
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "created_by", nullable = false)
     private User createdBy;
 
