@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Navigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { SidebarTrigger, useSidebar } from "@/components/ui/sidebar";
@@ -29,11 +29,33 @@ const AppShellWithVar: React.FC<{ children: React.ReactNode }> = ({ children }) 
 
 const AppelsOffres = () => {
   const { user, loading } = useAuth();
-  const { appelsOffres } = useAppelsOffres();
   const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("all");
   const [view, setView] = useState<"widget" | "list">("widget");
+
+  const [appelsOffres, setAppelsOffres] = useState<any[]>([]);
+
+  useEffect(() => {
+    const fetchRfq = async () => {
+      try {
+        const token = localStorage.getItem("token"); // récupère ton JWT
+        const response = await fetch("http://localhost:8080/api/rfqs", {
+          headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json"
+          }
+        });
+        if (!response.ok) throw new Error("Erreur lors du chargement des appels d'offres");
+        const data = await response.json();
+        setAppelsOffres(data);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    fetchRfq();
+  }, []);
+
 
   const handleGenerateDevis = async () => {
     if (!user) return;
@@ -206,7 +228,7 @@ Installation et mise en service : 4 semaines.`,
   }
 
   if (!user) {
-    return <Navigate to="/auth" replace />;
+    return <Navigate to="/homepage" replace />;
   }
 
   return (

@@ -50,4 +50,10 @@ public class Devis {
     // Relation avec les lignes de devis
     @OneToMany(mappedBy = "devis", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<LineItem> items;
+
+    // Relation vers RFQ (un Devis répond à un seul RFQ)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "rfq_id")
+    private Rfq rfq;
+
 }

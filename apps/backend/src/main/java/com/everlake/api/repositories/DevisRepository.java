@@ -21,4 +21,6 @@ public interface DevisRepository extends JpaRepository<Devis, Long> {
 
     // Récupérer un devis via son numéro unique
     Devis findByNumero(String numero);
+
+    long countByRfqId(Long rfqId);
 }

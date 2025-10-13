@@ -24,6 +24,7 @@ import DevisRecuDetail from "./pages/DevisRecuDetail";
 import DevisDetails from "./pages/DevisDetails";
 import SelectionReseau from "./pages/SelectionReseau";
 import CarnetContacts from "./pages/CarnetContacts";
+import HomePage from "./pages/HomePage";
 
 const queryClient = new QueryClient();
 
@@ -38,7 +39,7 @@ const getSidebarDefaultOpen = () => {
 
 const App = () => {
   const sidebarDefaultOpen = getSidebarDefaultOpen();
-  
+
   return (
     <HelmetProvider>
       <QueryClientProvider client={queryClient}>
@@ -47,11 +48,12 @@ const App = () => {
             <SidebarProvider defaultOpen={sidebarDefaultOpen}>
               <BrowserRouter>
               <Routes>
+                <Route path="/homepage" element={<HomePage />} />
+                <Route path="/" element={<Navigate to="/appels-offres" replace />} />
                 <Route path="/auth" element={<Auth />} />
                 <Route path="/logout" element={<Logout />} />
-                <Route path="/" element={<Navigate to="/appels-offres" replace />} />
                 <Route path="/ajouter-appel-offre" element={<AjouterAppelOffre />} />
-                
+
                 <Route path="/marches/:id" element={<MarcheDetails />} />
                 <Route path="/marches/:id/devis" element={<MarcheEnvoyerDevis />} />
                 <Route path="/appels-offres" element={<AppelsOffres />} />
@@ -59,8 +61,8 @@ const App = () => {
                 <Route path="/appels-offres/:id/devis" element={<DevisRecus />} />
                 <Route path="/appels-offres/:id/devis/:devisId" element={<DevisRecuDetail />} />
                 <Route path="/devis/:id" element={<DevisDetails />} />
-                
-                
+
+
                 <Route path="/company-profile" element={<ProfilEntreprise />} />
                 <Route path="/selection-reseau" element={<SelectionReseau />} />
                 <Route path="/carnet-contacts" element={<CarnetContacts />} />

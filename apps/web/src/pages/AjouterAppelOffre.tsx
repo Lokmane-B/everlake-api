@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { SidebarTrigger, useSidebar } from "@/components/ui/sidebar";
 import { EverlakeSidebar } from "@/components/EverlakeSidebar";
 import { Button } from "@/components/ui/button";
@@ -70,102 +70,67 @@ const AjouterAppelOffre = () => {
     setFormData(prev => ({ ...prev, document: file }));
   };
 
-  const createMarche = async (status: 'Actif' | 'Brouillon') => {
-    if (!user) {
-      toast.error("Vous devez être connecté pour créer une demande de devis");
-      return null;
-    }
-
-    if (!formData.titre.trim()) {
-      toast.error("Le titre est obligatoire");
-      return null;
-    }
-
-    try {
-      setLoading(true);
-
-      // Parse evaluation criteria into array
-      const evaluationCriteriaArray = formData.criteres
-        .split('\n')
-        .filter(line => line.trim())
-        .map(line => line.trim());
-
-      // Add execution deadlines to cahier des charges
-      let fullCahier = formData.cahierDesCharges;
-      if (formData.delaisExecution) {
-        fullCahier += `\n\n5 Délais d'exécution\n\n${formData.delaisExecution}`;
-      }
-
       // Create the marche
-      const { data: marche, error } = await supabase
-        .from('marches')
-        .insert({
-          title: formData.titre,
-          sector: formData.secteur || null,
-          description: formData.description || null,
-          cahier_des_charges: fullCahier || null,
-          quantity: formData.quantite || null,
-          location: formData.localisation || null,
-          budget: formData.budgetEstime || null,
-          contract_type: formData.typeContrat || null,
-          visibility: formData.visibilite,
-          status: status,
-          end_date: formData.dateLimite || null,
-          created_by: user.id,
-          company_name: null, // Will be filled from profile if needed
-          evaluation_criteria: evaluationCriteriaArray
-        })
-        .select()
-        .single();
+const createMarche = async (status: "Actif" | "Brouillon") => {
+  if (!user) {
+    toast.error("Vous devez être connecté pour créer une demande de devis");
+    return null;
+  }
+  if (!formData.titre.trim()) {
+    toast.error("Le titre est obligatoire");
+    return null;
+  }
 
-      if (error) {
-        throw error;
-      }
+  try {
+    setLoading(true);
 
-      console.log('Marche created:', marche);
+    const body = {
+      title: formData.titre,
+      purchaseType: formData.typeAchat || null,
+      sector: formData.secteur || null,
+      description: formData.description || null,
+      cahierDesCharges: (formData.cahierDesCharges || "") +
+        (formData.delaisExecution ? `\n\n5 Délais d'exécution\n\n${formData.delaisExecution}` : ""),
+      quantity: formData.quantite || null,
+      location: formData.localisation || null,
+      budget: formData.budgetEstime ? Number(formData.budgetEstime.replace(/\s/g, "")) : null,
+      contractType: formData.typeContrat || null,
+      visibility: formData.visibilite,
+      status: status,
+      endDate: formData.dateLimite || null,
+      evaluationCriteria: formData.criteres
+        .split("\n")
+        .map(s => s.trim())
+        .filter(Boolean),
+      companyName: null
+    };
 
-      // If publishing, generate PDF and create notification
-      if (status === 'Actif') {
-        try {
-          // Generate PDF
-          const { error: pdfError } = await supabase.functions.invoke('generate-ao-pdf', {
-            body: { marcheId: marche.id }
-          });
+    const token = localStorage.getItem("token");
+    console.log("JWT envoyé ->", token);
 
-          if (pdfError) {
-            console.error('PDF generation failed:', pdfError);
-            // Don't fail the whole process, just log the error
-          }
+    const res = await fetch("http://localhost:8080/api/rfqs", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      },
+      body: JSON.stringify(body)
+    });
 
-          // Create notification
-          const { error: notifError } = await supabase.functions.invoke('create-notification', {
-            body: {
-              userId: user.id,
-              type: 'success',
-              title: 'Appel d\'offres publié',
-              message: `Votre demande de devis "${formData.titre}" a été publiée avec succès.`
-            }
-          });
+    if (!res.ok) throw new Error("Erreur lors de la création de la demande de devis");
+    const marche = await res.json();
+    return marche;
+  } catch (e) {
+    console.error("Error creating marche:", e);
+    toast.error("Erreur lors de la création de la demande de devis");
+    return null;
+  } finally {
+    setLoading(false);
+  }
+};
 
-          if (notifError) {
-            console.error('Notification creation failed:', notifError);
-            // Don't fail the whole process, just log the error
-          }
-        } catch (funcError) {
-          console.error('Edge function error:', funcError);
-          // Continue despite edge function failures
-        }
-      }
 
-      return marche;
-    } catch (error) {
-      console.error('Error creating marche:', error);
-      toast.error("Erreur lors de la création de la demande de devis");
-      return null;
-    } finally {
-      setLoading(false);
-    }
-  };
+
 
   const handlePublier = async () => {
     const marche = await createMarche('Actif');
