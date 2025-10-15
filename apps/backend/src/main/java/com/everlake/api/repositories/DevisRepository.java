@@ -14,7 +14,6 @@ public interface DevisRepository extends JpaRepository<Devis, Long> {
     List<Devis> findByClient(String client);
     Devis findByNumero(String numero);
 
-    long countByRfq_Id(Long rfqId);
-    List<Devis> findByRfq_Id(Long rfqId);
+    long countByRfqId(Long rfqId);
+    List<Devis> findByRfqId(Long rfqId);
 }
-

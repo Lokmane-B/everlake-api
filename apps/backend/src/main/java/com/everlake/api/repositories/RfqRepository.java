@@ -25,4 +25,5 @@ public interface RfqRepository extends JpaRepository<Rfq, Long> {
     // Chercher par titre (contient)
     List<Rfq> findByTitleContainingIgnoreCase(String keyword);
 
+
 }
